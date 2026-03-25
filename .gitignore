@@ -10,4 +10,4 @@ dist/
 .env
 .vscode/
 .vite/
-*.egg-info/
+
