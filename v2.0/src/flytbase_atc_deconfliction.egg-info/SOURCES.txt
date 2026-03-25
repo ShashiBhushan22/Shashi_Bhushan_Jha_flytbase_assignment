@@ -5,6 +5,7 @@ src/flytbase_atc/dashboard.py
 src/flytbase_atc/deconfliction.py
 src/flytbase_atc/geometry.py
 src/flytbase_atc/models.py
+src/flytbase_atc/performance.py
 src/flytbase_atc/scenarios.py
 src/flytbase_atc/simulator.py
 src/flytbase_atc_deconfliction.egg-info/PKG-INFO
