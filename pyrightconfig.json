@@ -1,0 +1,10 @@
+{
+  "executionEnvironments": [
+    {
+      "root": "v2.0",
+      "extraPaths": [
+        "v2.0/src"
+      ]
+    }
+  ]
+}

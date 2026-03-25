@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import cast
 
 ROOT = Path(__file__).resolve().parent
 SRC = ROOT / "src"
@@ -206,11 +207,15 @@ with right:
     paused_rows = simulator.paused_status(timestamp_s, warning_after_s=paused_warning_s)
     st.dataframe(paused_rows, width="stretch")
 
-    paused_ids = [row["drone_id"] for row in paused_rows if row["paused"]]
+    paused_ids: list[str] = [
+        cast(str, row["drone_id"])
+        for row in paused_rows
+        if cast(bool, row["paused"])
+    ]
     if paused_ids:
         st.info(f"Resume-review priority: {paused_rows[0]['drone_id']} has the highest paused-time risk.")
         st.subheader("Safe resume preview")
-        selected = st.selectbox("Paused drone", paused_ids)
+        selected = cast(str, st.selectbox("Paused drone", paused_ids))
         preview = simulator.preview_resume(selected, timestamp_s=timestamp_s, horizon_s=lookahead_s, step_s=1.0)
         st.dataframe(preview, width="stretch")
 
