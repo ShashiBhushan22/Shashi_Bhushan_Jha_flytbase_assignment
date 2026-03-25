@@ -142,7 +142,7 @@ col3.metric("Decision", decision.decision)
 col4.metric("Drones", len(plans))
 col5.metric("System health", health.status)
 
-st.plotly_chart(figure, use_container_width=True)
+st.plotly_chart(figure, width="stretch")
 
 left, right = st.columns([1.2, 1])
 with left:
@@ -204,7 +204,7 @@ with right:
                 simulator.pause_drone(drone_id, timestamp_s)
 
     paused_rows = simulator.paused_status(timestamp_s, warning_after_s=paused_warning_s)
-    st.dataframe(paused_rows, use_container_width=True)
+    st.dataframe(paused_rows, width="stretch")
 
     paused_ids = [row["drone_id"] for row in paused_rows if row["paused"]]
     if paused_ids:
@@ -212,7 +212,7 @@ with right:
         st.subheader("Safe resume preview")
         selected = st.selectbox("Paused drone", paused_ids)
         preview = simulator.preview_resume(selected, timestamp_s=timestamp_s, horizon_s=lookahead_s, step_s=1.0)
-        st.dataframe(preview, use_container_width=True)
+        st.dataframe(preview, width="stretch")
 
 st.subheader("Incident replay")
 if alerts:
@@ -229,7 +229,7 @@ if alerts:
         window_s=replay_window_s,
         step_s=1.0,
     )
-    st.dataframe(replay, use_container_width=True)
+    st.dataframe(replay, width="stretch")
 else:
     st.write("No active alert to replay at this timestamp.")
 
@@ -240,7 +240,7 @@ with st.expander("Performance sweep and system limits"):
         lookahead=lookahead_s,
         buffer=buffer_m,
     )
-    st.dataframe(benchmark_rows, use_container_width=True)
+    st.dataframe(benchmark_rows, width="stretch")
     if breaking_point is None:
         st.success("No degraded state detected in the sampled sweep.")
     else:
