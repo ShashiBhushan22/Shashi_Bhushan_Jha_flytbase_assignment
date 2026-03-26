@@ -8,6 +8,7 @@ Implements strategic pre-flight deconfliction for waypoint missions with spatial
 - Temporal overlap checks.
 - Conflict explanation (where, when, and with which drone).
 - Scenario plotting outputs for demo video frames.
+- Optional altitude-aware 3D waypoints and 4D replay-style visualization outputs.
 
 ## Structure
 
@@ -42,6 +43,12 @@ python visualization.py
 ```
 
 Interactive visualization files are written to `src/plots/` as `.html` artifacts by default.
+
+Generated artifacts include:
+
+- `conflict_case.html` for the 2D overview,
+- `conflict_case_3d.html` for altitude-aware airspace view,
+- `conflict_case_4d.html` for animated 3D + time playback.
 
 ## Query interface example
 

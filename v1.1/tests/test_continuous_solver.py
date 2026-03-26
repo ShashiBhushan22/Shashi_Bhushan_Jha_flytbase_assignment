@@ -36,3 +36,18 @@ def test_mixed_speed_case_produces_valid_report() -> None:
     for conflict in report.conflicts:
         assert conflict.drone_a == "p"
         assert conflict.drone_b == "q"
+
+
+def test_3d_altitude_offset_can_remove_a_crossing_conflict() -> None:
+    primary = Mission("a", [(0.0, 0.0, 20.0), (100.0, 100.0, 20.0)], 10.0, 0.0)
+    intruder = Mission("b", [(100.0, 0.0, 60.0), (0.0, 100.0, 60.0)], 10.0, 0.0)
+    report = analyze_mission(primary, [intruder], buffer_m=8.0)
+    assert report.status == "clear"
+    assert report.conflicts == []
+
+
+def test_mission_window_warning_is_reported_when_route_runs_long() -> None:
+    primary = Mission("a", [(0.0, 0.0), (100.0, 0.0)], 5.0, 0.0, mission_window_s=(0.0, 10.0))
+    intruder = Mission("b", [(0.0, 30.0), (100.0, 30.0)], 5.0, 0.0, mission_window_s=(0.0, 25.0))
+    report = analyze_mission(primary, [intruder], buffer_m=5.0)
+    assert report.warnings

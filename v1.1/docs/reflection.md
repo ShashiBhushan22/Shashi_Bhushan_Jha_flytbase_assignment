@@ -52,7 +52,3 @@ The continuous segment kernel scales better than naive sampling, but all-pairs c
 - candidate pruning via indexing,
 - parallel segment evaluation,
 - streaming conflict updates.
-
-## AI usage notes
-
-AI was used to accelerate code structuring, test drafting, and write-up iteration, with manual verification and test-backed validation of generated logic.

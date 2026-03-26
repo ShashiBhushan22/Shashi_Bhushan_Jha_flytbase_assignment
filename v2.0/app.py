@@ -11,7 +11,7 @@ if str(SRC) not in sys.path:
 
 import streamlit as st
 
-from flytbase_atc.dashboard import build_airspace_figure_with_simulator
+from flytbase_atc.dashboard import build_airspace_figure_with_simulator, build_replay_animation_figure_with_simulator
 from flytbase_atc.deconfliction import (
     analyze_conflicts,
     build_system_health_snapshot,
@@ -235,8 +235,28 @@ if alerts:
         step_s=1.0,
     )
     st.dataframe(replay, width="stretch")
+    replay_figure = build_replay_animation_figure_with_simulator(
+        plans,
+        simulator=simulator,
+        start_time_s=max(0.0, replay_center_s - replay_window_s),
+        end_time_s=replay_center_s,
+        buffer_m=buffer_m,
+        lookahead_s=lookahead_s,
+        step_s=1.0,
+    )
+    st.plotly_chart(replay_figure, width="stretch")
 else:
     st.write("No active alert to replay at this timestamp.")
+    replay_figure = build_replay_animation_figure_with_simulator(
+        plans,
+        simulator=simulator,
+        start_time_s=max(0.0, timestamp_s - replay_window_s),
+        end_time_s=timestamp_s,
+        buffer_m=buffer_m,
+        lookahead_s=lookahead_s,
+        step_s=1.0,
+    )
+    st.plotly_chart(replay_figure, width="stretch")
 
 with st.expander("Performance sweep and system limits"):
     benchmark_rows, breaking_point = cached_performance_sweep(

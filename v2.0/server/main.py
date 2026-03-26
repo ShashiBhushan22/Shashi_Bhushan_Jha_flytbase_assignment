@@ -101,7 +101,7 @@ def load_scenario(name: str = "dense", dense_count: int = 30) -> dict[str, Any]:
 @app.get("/state")
 def get_state(timestamp_s: float = 10.0, buffer_m: float = 10.0, lookahead_s: float = 20.0) -> dict[str, Any]:
     state.current_time_s = timestamp_s
-    packets = [asdict(sample) for sample in state.simulator.snapshot(timestamp_s)]
+    packets = [asdict(sample) for sample in state.simulator.snapshot_full(timestamp_s)]
     health_snapshot, alerts = build_system_health_snapshot(state.plans, timestamp_s, lookahead_s, buffer_m)
     return {
         "time_s": timestamp_s,
@@ -154,11 +154,20 @@ async def ws_telemetry(socket: WebSocket) -> None:
     try:
         while True:
             t += 1.0
-            packets = [asdict(sample) for sample in state.simulator.snapshot(t)]
+            packets = [asdict(sample) for sample in state.simulator.snapshot_full(t)]
             health_snapshot, alerts = build_system_health_snapshot(state.plans, t, 20.0, 10.0)
             await socket.send_json(
                 {
                     "time_s": t,
+                    "drone_count": len(state.plans),
+                    "plans": [
+                        {
+                            "drone_id": plan.drone_id,
+                            "controlled": plan.controlled,
+                            "waypoints": [{"x": w.x, "y": w.y, "z": w.z} for w in plan.waypoints],
+                        }
+                        for plan in state.plans
+                    ],
                     "telemetry": packets,
                     "health": asdict(health_snapshot),
                     "alerts": [asdict(alert) for alert in alerts],

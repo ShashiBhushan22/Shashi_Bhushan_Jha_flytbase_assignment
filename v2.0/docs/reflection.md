@@ -32,15 +32,6 @@ The V2 implementation adds operator-first behaviors required by the assignment:
 - incident replay for last 10-20 seconds,
 - latency/load health indicators with degraded-state notes.
 
-## AI usage
-
-AI tools were used to accelerate architecture iteration, scenario synthesis, test generation, and documentation drafting. Outputs were validated by:
-
-- keeping the core logic small and testable,
-- adding deterministic tests for clear and conflicting paths,
-- keeping the simulator deterministic by seed,
-- separating the math layer from the dashboard so conflict math is independently testable.
-
 ## Testing strategy
 
 Automated tests cover:

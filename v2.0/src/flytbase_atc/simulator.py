@@ -136,6 +136,36 @@ class AirspaceSimulator:
             samples.append(self.telemetry_packet(plan.drone_id, timestamp_s))
         return samples
 
+    def snapshot_full(self, timestamp_s: float) -> list[TelemetrySample]:
+        """Return a full airspace view, reusing last known telemetry when no new packet is due."""
+
+        fresh_samples = {sample.drone_id: sample for sample in self.snapshot(timestamp_s)}
+        complete_view: list[TelemetrySample] = []
+
+        for plan in self.plans:
+            fresh = fresh_samples.get(plan.drone_id)
+            if fresh is not None:
+                complete_view.append(fresh)
+                continue
+
+            history = self.telemetry_history[plan.drone_id]
+            if history:
+                last = history[-1]
+                complete_view.append(
+                    TelemetrySample(
+                        drone_id=plan.drone_id,
+                        timestamp_s=timestamp_s,
+                        position=last.position,
+                        controlled=plan.controlled,
+                        stale=True,
+                    )
+                )
+                continue
+
+            complete_view.append(self.telemetry_packet(plan.drone_id, timestamp_s))
+
+        return complete_view
+
     def paused_status(self, timestamp_s: float, warning_after_s: float = 20.0) -> list[dict[str, object]]:
         statuses: list[dict[str, object]] = []
         for plan in self.plans:

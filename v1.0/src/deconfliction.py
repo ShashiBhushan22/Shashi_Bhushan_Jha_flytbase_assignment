@@ -5,7 +5,7 @@ from math import dist
 from models import Conflict, Mission
 
 
-def _sample_path(mission: Mission, samples_per_leg: int = 30) -> list[tuple[float, float, float]]:
+def _sample_path(mission: Mission, samples_per_leg: int = 30) -> list[tuple[float, float, float, float]]:
     """Interpolate mission path into time-stamped points for v1.0 checks."""
 
     if len(mission.waypoints) < 2:
@@ -31,17 +31,27 @@ def _sample_path(mission: Mission, samples_per_leg: int = 30) -> list[tuple[floa
             for i in range(len(mission.waypoints))
         ]
 
-    points: list[tuple[float, float, float]] = []
+    points: list[tuple[float, float, float, float]] = []
     for i in range(len(mission.waypoints) - 1):
         a = mission.waypoints[i]
         b = mission.waypoints[i + 1]
+        ax, ay, az = a.as_vector()
+        bx, by, bz = b.as_vector()
         leg_t0 = timeline[i]
         leg_t1 = timeline[i + 1]
         for sample in range(samples_per_leg):
             ratio = sample / float(samples_per_leg)
             t = leg_t0 + ratio * (leg_t1 - leg_t0)
-            points.append((a.x + ratio * (b.x - a.x), a.y + ratio * (b.y - a.y), t))
-    points.append((mission.waypoints[-1].x, mission.waypoints[-1].y, timeline[-1]))
+            points.append(
+                (
+                    ax + ratio * (bx - ax),
+                    ay + ratio * (by - ay),
+                    az + ratio * (bz - az),
+                    t,
+                )
+            )
+    end_x, end_y, end_z = mission.waypoints[-1].as_vector()
+    points.append((end_x, end_y, end_z, timeline[-1]))
     return points
 
 
@@ -57,18 +67,18 @@ def check_mission(
     conflicts: list[Conflict] = []
     for other in others:
         other_samples = _sample_path(other)
-        for px, py, pt in primary_samples:
-            for ox, oy, ot in other_samples:
+        for px, py, pz, pt in primary_samples:
+            for ox, oy, oz, ot in other_samples:
                 if abs(pt - ot) > temporal_tolerance_s:
                     continue
-                d = dist((px, py), (ox, oy))
+                d = dist((px, py, pz), (ox, oy, oz))
                 if d <= safety_buffer_m:
                     conflicts.append(
                         Conflict(
                             with_drone=other.drone_id,
                             own_drone=primary.drone_id,
                             conflict_time_s=pt,
-                            location=((px + ox) / 2.0, (py + oy) / 2.0),
+                            location=((px + ox) / 2.0, (py + oy) / 2.0, (pz + oz) / 2.0),
                             minimum_distance_m=d,
                             reason="Temporal overlap with spatial separation below safety buffer.",
                         )

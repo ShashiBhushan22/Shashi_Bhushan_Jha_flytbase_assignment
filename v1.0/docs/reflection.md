@@ -57,7 +57,3 @@ For larger traffic volumes, this baseline would evolve by:
 - indexing flights spatially and temporally before pair checks,
 - running checks in parallel workers,
 - ingesting telemetry from streaming pipelines.
-
-## AI usage notes
-
-AI-assisted coding was used for scaffolding tests, structure refinement, and documentation drafting, followed by manual validation of outputs and behavior via tests.

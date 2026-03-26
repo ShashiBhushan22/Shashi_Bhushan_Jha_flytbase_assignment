@@ -9,6 +9,7 @@ V1.1 requires continuous trajectory analysis with:
 - No precomputed waypoint timestamps.
 - Conflict detection computed analytically in continuous time.
 - Conflict explanation with exact time/location and minimum distance.
+- Optional altitude-aware 3D paths and 4D replay-style visualization outputs.
 
 ## Structure
 
@@ -44,6 +45,12 @@ python visualization.py
 ```
 
 Interactive visualization files are written to `src/plots/` as `.html` artifacts.
+
+Generated artifacts include:
+
+- `crossing_conflict.html` for the 2D overview,
+- `crossing_conflict_3d.html` for altitude-aware airspace view,
+- `crossing_conflict_4d.html` for animated 3D + time playback.
 
 ## Query interface example
 

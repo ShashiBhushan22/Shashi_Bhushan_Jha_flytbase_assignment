@@ -10,6 +10,7 @@ This repository implements a real-time ATC-focused extension of strategic deconf
 - Controlled vs unknown drone simulation with configurable telemetry rate, delay, noise, and dropout.
 - Pause/resume controls, paused-duration warnings, and safe-resume preview.
 - Incident replay window for selected alerts.
+- Animated 4D replay figure (3D space + time) for dense-airspace review.
 - System health indicators (latency, pair checks, degraded-state signals).
 - Pytest coverage for geometry, prediction, simulator, and ATC workflow logic.
 
@@ -67,6 +68,11 @@ streamlit run app.py
 
 This Streamlit app is the main assignment-facing dashboard. It exposes the full operator workflow: pre-flight review, grouped in-air alerts, pause/resume controls, safe-resume preview, replay, and a performance sweep panel.
 
+The Streamlit dashboard also renders:
+
+- a 3D airspace overview,
+- a 4D replay animation for the selected incident window.
+
 ## Run the API and React console
 
 Backend API:
@@ -88,6 +94,13 @@ Build frontend for production verification:
 ```bash
 cd /home/bhushan-arc/flytbase/v2.0/frontend
 npm run build
+```
+
+Launch the live Streamlit dashboard, API, and React ATC Console together:
+
+```bash
+cd /home/bhushan-arc/flytbase
+./run_live_webapps.sh
 ```
 
 ## Backend endpoints used by the React UI
@@ -123,6 +136,13 @@ Run the load benchmark:
 ```bash
 cd /home/bhushan-arc/flytbase/v2.0
 python scripts/benchmark_load.py
+```
+
+Generate HTML visualization artifacts for documentation/video capture:
+
+```bash
+cd /home/bhushan-arc/flytbase/v2.0
+python scripts/generate_visuals.py
 ```
 
 Sample output captured on March 25, 2026 in this workspace:
